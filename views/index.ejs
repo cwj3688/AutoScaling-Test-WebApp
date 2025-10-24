@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoscaling & DB Test</title>
+    <style>
+        /* CSS 스타일은 이전과 동일 */
+        body { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 40px 20px; box-sizing: border-box; background-color: #f0f2f5; font-family: Arial, sans-serif; }
+        .container, .logs-container { text-align: center; width: 100%; max-width: 700px; padding: 40px; border-radius: 12px; background-color: white; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .logs-container { margin-top: 30px; }
+        h1 { color: #333; font-size: 2.5em; margin-bottom: 10px; }
+        h2 { color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;}
+        p { color: #555; font-size: 1.2em; }
+        .hostname { color: #007bff; font-weight: bold; background-color: #e7f3ff; padding: 8px 15px; border-radius: 8px; display: inline-block; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f9f9f9; }
+        .db-status { font-size: 0.9em; color: #e74c3c; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Hello, Autoscaling World!</h1>
+        <p>이 요청은 아래 서버에서 처리되었습니다:</p>
+        <div class="hostname"><%= hostname %></div>
+
+        <%# DB 연결이 안 된 경우 안내 메시지 표시 %>
+        <% if (!dbConnected) { %>
+            <p class="db-status">데이터베이스에 연결되지 않아 접속 기록을 표시할 수 없습니다.</p>
+        <% } %>
+    </div>
+
+    <%# DB가 연결된 경우에만 접속 기록 섹션을 렌더링 %>
+    <% if (dbConnected && logs) { %>
+    <div class="logs-container">
+        <h2>📜 전체 접속 기록</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>접속 서버 호스트</th>
+                    <th>접속 시간</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% logs.forEach(log => { %>
+                    <tr>
+                        <td><%= log.id %></td>
+                        <td><%= log.hostname %></td>
+                        <td><%= new Date(log.access_time).toLocaleString('ko-KR') %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <% } %>
+</body>
+</html>
